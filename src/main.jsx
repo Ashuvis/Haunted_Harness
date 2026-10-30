@@ -55,6 +55,10 @@ function App() {
     <div className="site-shell">
       <div className="fog fog-one" />
       <div className="fog fog-two" />
+      <div className="bat bat-one">ᵔᴥᵔ</div>
+      <div className="bat bat-two">ᵔᴥᵔ</div>
+      <div className="pumpkin pumpkin-one">🎃</div>
+      <div className="pumpkin pumpkin-two">🎃</div>
       <header className="site-header frame">
         <a className="brand" href="#top" aria-label="Haunted Harness home">
           <span className="brand-symbol">☽</span>
@@ -70,7 +74,7 @@ function App() {
       <main id="top">
         <section className="hero frame">
           <div className="hero-copy">
-            <p className="kicker">LOCAL CODE EXPLAINER / 001</p>
+            <p className="kicker">☾ HALLOWEEN EDITION / LOCAL CODE EXPLAINER / 001</p>
             <h1>Understand the <span>unknown</span> inside your code.</h1>
             <p className="hero-text">
               A private Python utility powered by Ollama. Summon a clear rundown of any local source file
@@ -165,7 +169,7 @@ function App() {
       </main>
 
       <footer className="site-footer frame">
-        <div><span className="brand-symbol">☽</span> HAUNTED <em>HARNESS</em></div>
+        <div><span className="brand-symbol">☾</span> HAUNTED <em>HARNESS</em></div>
         <p>LOCAL INFERENCE · NO API KEY · OPEN MODEL RUNTIME</p>
         <CodeCard label="BUILD THE PAGE" copyValue={deployCommands}>{deployCommands}</CodeCard>
       </footer>

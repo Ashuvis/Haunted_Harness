@@ -76,3 +76,50 @@ h3 { font-size: 1.2rem; letter-spacing: -.04em; }
 @keyframes drift { 50% { transform: translateY(-12px) rotate(1deg); } }
 @media (max-width: 820px) { .hero { grid-template-columns: 1fr; padding-top: 70px; }.hero-art { min-height: 430px; }.feature-grid, .example-grid, .ritual-grid { grid-template-columns: 1fr; }.section-title-row { display: block; }.section-title-row > p { margin-top: 25px; }.site-footer { grid-template-columns: 1fr; }.site-footer p { text-align: left; }.site-footer .code-card { justify-self: start; }.terminal-card { right: 0; } }
 @media (max-width: 560px) { .frame { width: min(100% - 32px, 1160px); }.site-header { min-height: 70px; }.site-header nav { display: none; }.hero { min-height: auto; padding: 75px 0 60px; }.hero-actions { align-items: flex-start; flex-direction: column; }.hero-art { transform: scale(.8); margin: -35px 0; }.section { padding: 70px 0; }h1 { font-size: 3.5rem; }h2 { font-size: 3rem; } }
+
+/* Halloween atmosphere: moonlit neutrals with ember-orange and midnight-violet accents. */
+.site-shell {
+  background:
+    radial-gradient(circle at 75% 10%, rgba(86, 62, 129, .28), transparent 28rem),
+    radial-gradient(circle at 18% 66%, rgba(180, 75, 18, .12), transparent 24rem),
+    #111214;
+}
+.site-shell::after {
+  content: "✦  ✧  ✦  ✧  ✦  ✧  ✦";
+  position: absolute;
+  top: 105px;
+  right: 7%;
+  color: rgba(224, 172, 92, .48);
+  font-size: .75rem;
+  letter-spacing: 1.5rem;
+  pointer-events: none;
+  transform: rotate(-8deg);
+}
+.kicker, .section-label { color: #c99a55; }
+.hero h1 span, h2 span { color: #db8d3e; text-shadow: 0 0 28px rgba(219, 141, 62, .2); }
+.button-light { color: #171819; background: #e8a24e; border-color: #e8a24e; box-shadow: 0 0 24px rgba(232, 162, 78, .16); }
+.button-light:hover { background: #f0bf75; border-color: #f0bf75; }
+.text-link:hover, nav a:hover { color: #e8a24e; }
+.moon { background: #d7d7d4; box-shadow: 0 0 100px rgba(234, 178, 93, .2); }
+.moon-ring { border-color: rgba(219, 141, 62, .55); }
+.specter { box-shadow: 18px 24px 0 #8e8f91, 0 26px 50px #090a0b, 0 0 34px rgba(233, 178, 95, .18); }
+.terminal-card { border-color: #70502d; box-shadow: 12px 14px 0 #303134, 0 0 30px rgba(205, 119, 43, .12); }
+.terminal-ok { color: #e8a24e !important; }
+.feature:hover { border-color: #b5793d; box-shadow: inset 0 0 35px rgba(178, 99, 34, .07); }
+.feature-arrow { color: #e8a24e; }
+.warning { border-color: #70502d; background: rgba(108, 61, 25, .12); }
+.warning span, .warning strong { color: #e8a24e; }
+.copy-button:hover { color: #e8a24e; }
+.bat, .pumpkin { position: absolute; z-index: 1; pointer-events: none; user-select: none; }
+.bat { color: #29242f; font: 1.1rem "DM Mono", monospace; letter-spacing: -.5rem; animation: bat-float 7s ease-in-out infinite; }
+.bat-one { top: 165px; left: 18%; transform: scale(1.3); }
+.bat-two { top: 420px; right: 12%; animation-delay: -3s; transform: scale(.8); opacity: .7; }
+.pumpkin { filter: grayscale(.15) drop-shadow(0 0 14px rgba(228, 129, 44, .25)); font-size: 2rem; animation: pumpkin-glow 3s ease-in-out infinite; }
+.pumpkin-one { top: 610px; left: 4%; transform: rotate(-12deg); }
+.pumpkin-two { top: 1360px; right: 5%; font-size: 1.45rem; transform: rotate(12deg); animation-delay: -1.5s; }
+.site-footer { border-top-color: #70502d; }
+@keyframes bat-float { 50% { transform: translate(22px, -14px) rotate(5deg); } }
+@keyframes pumpkin-glow { 50% { filter: grayscale(.15) drop-shadow(0 0 24px rgba(228, 129, 44, .55)); } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}
