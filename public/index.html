@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Haunted Harness is a private, local Ollama-powered source-code explainer.">
+  <meta name="theme-color" content="#0b0714">
+  <title>Haunted Harness | Summon understanding from your code</title>
+  <style>
+    :root {
+      --ink: #f8f2ff;
+      --muted: #b6a8c9;
+      --night: #0b0714;
+      --panel: rgba(25, 16, 42, .82);
+      --line: rgba(218, 180, 255, .18);
+      --violet: #9c5cff;
+      --acid: #c9ff55;
+      --orange: #ff8a4c;
+      --shadow: 0 24px 80px rgba(0, 0, 0, .35);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 85% 4%, rgba(156, 92, 255, .22), transparent 28rem),
+        radial-gradient(circle at 10% 35%, rgba(255, 138, 76, .10), transparent 25rem),
+        var(--night);
+      font: 16px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .16;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+      mix-blend-mode: screen;
+    }
+    a { color: inherit; }
+    .wrap { width: min(1120px, calc(100% - 40px)); margin: auto; }
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 0; border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -.03em; }
+    .brand-mark { font-size: 1.7rem; filter: drop-shadow(0 0 14px rgba(201,255,85,.5)); }
+    nav a { text-decoration: none; color: var(--muted); font-size: .92rem; margin-left: 22px; }
+    nav a:hover { color: var(--acid); }
+    .hero { display: grid; grid-template-columns: 1.08fr .92fr; gap: 70px; align-items: center; padding: 92px 0 80px; }
+    .eyebrow { color: var(--acid); text-transform: uppercase; letter-spacing: .16em; font-size: .76rem; font-weight: 800; }
+    h1, h2, h3 { line-height: 1.08; letter-spacing: -.05em; margin: 0; }
+    h1 { font-size: clamp(3.2rem, 8vw, 6.7rem); max-width: 760px; margin: 16px 0 24px; }
+    h1 span { color: var(--acid); text-shadow: 0 0 32px rgba(201,255,85,.2); }
+    .lead { max-width: 650px; color: var(--muted); font-size: 1.16rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      border: 1px solid var(--line); border-radius: 999px; padding: 12px 19px;
+      text-decoration: none; font-weight: 800; cursor: pointer;
+    }
+    .button.primary { color: #14100b; background: var(--acid); border-color: var(--acid); }
+    .button.secondary { color: var(--ink); background: rgba(255,255,255,.04); }
+    .button:hover { transform: translateY(-2px); }
+    .apparition { position: relative; min-height: 370px; display: grid; place-items: center; }
+    .moon { width: 280px; height: 280px; border-radius: 50%; background: #e8ffd0; box-shadow: 0 0 80px rgba(201,255,85,.3); position: absolute; }
+    .ghost { position: relative; width: 210px; height: 245px; border-radius: 110px 110px 20px 20px; background: linear-gradient(150deg, #fff, #b9a2d9); box-shadow: var(--shadow); animation: hover 4s ease-in-out infinite; }
+    .ghost::after { content: "◡"; position: absolute; bottom: -34px; left: 0; width: 100%; color: #b9a2d9; font-size: 5rem; line-height: .4; letter-spacing: 12px; }
+    .eyes { display: flex; justify-content: center; gap: 30px; padding-top: 87px; color: #1a1225; font-size: 2rem; }
+    .terminal {
+      position: absolute; bottom: 10px; right: 0; width: 260px; padding: 17px;
+      border: 1px solid var(--line); border-radius: 14px; background: rgba(11,7,20,.88);
+      box-shadow: var(--shadow); font: .78rem/1.5 "SFMono-Regular", Consolas, monospace; color: var(--acid);
+    }
+    .terminal b { color: var(--orange); }
+    section { padding: 74px 0; }
+    .section-heading { max-width: 650px; margin-bottom: 30px; }
+    .section-heading h2 { font-size: clamp(2rem, 4vw, 3.2rem); margin: 10px 0 12px; }
+    .section-heading p, .card p, li { color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .card, .code-card, .notice, details {
+      border: 1px solid var(--line); border-radius: 18px; background: var(--panel); box-shadow: var(--shadow);
+    }
+    .card { padding: 25px; }
+    .card-icon { font-size: 1.7rem; }
+    .card h3 { margin: 16px 0 8px; font-size: 1.25rem; letter-spacing: -.03em; }
+    .steps { counter-reset: item; display: grid; gap: 14px; }
+    .step { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; }
+    .step::before { counter-increment: item; content: counter(item); display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; color: #16100b; background: var(--orange); font-weight: 900; }
+    .step h3 { margin: 2px 0 3px; font-size: 1.15rem; }
+    .step p { margin: 0; color: var(--muted); }
+    .code-card { overflow: hidden; }
+    .code-top { display: flex; justify-content: space-between; align-items: center; padding: 11px 15px; color: var(--muted); border-bottom: 1px solid var(--line); font-size: .8rem; }
+    pre { overflow-x: auto; margin: 0; padding: 20px; color: #e5dcff; background: rgba(0,0,0,.24); font: .88rem/1.7 "SFMono-Regular", Consolas, monospace; }
+    code { color: var(--acid); }
+    .notice { padding: 22px; border-color: rgba(255,138,76,.45); background: rgba(72,35,25,.35); }
+    .notice strong { color: var(--orange); }
+    .faq { display: grid; gap: 10px; }
+    details { padding: 18px 20px; }
+    summary { cursor: pointer; font-weight: 800; }
+    details p { color: var(--muted); margin: 12px 0 0; }
+    footer { padding: 30px 0 50px; color: var(--muted); border-top: 1px solid var(--line); }
+    .footer-row { display: flex; justify-content: space-between; gap: 20px; }
+    @keyframes hover { 50% { transform: translateY(-13px) rotate(1deg); } }
+    @media (max-width: 800px) {
+      .hero { grid-template-columns: 1fr; padding-top: 60px; gap: 25px; }
+      .apparition { min-height: 300px; transform: scale(.85); }
+      .grid { grid-template-columns: 1fr; }
+      nav .links { display: none; }
+      .footer-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <nav>
+      <a class="brand" href="#"><span class="brand-mark">👻</span> Haunted Harness</a>
+      <div class="links">
+        <a href="#features">Features</a>
+        <a href="#install">Install</a>
+        <a href="#deploy">Deploy</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="wrap hero">
+      <div>
+        <div class="eyebrow">Local AI · Python CLI · Open model</div>
+        <h1>Summon <span>understanding</span> from your code.</h1>
+        <p class="lead">Haunted Harness is a Halloween-themed Python utility that uses Ollama on your machine to explain source files, their purpose, and how their parts work together.</p>
+        <div class="actions">
+          <a class="button primary" href="#install">🕯️ Start the ritual</a>
+          <a class="button secondary" href="#deploy">Deploy this page →</a>
+        </div>
+      </div>
+      <div class="apparition" aria-label="Friendly ghost illustration">
+        <div class="moon"></div>
+        <div class="ghost"><div class="eyes"><span>●</span><span>●</span></div></div>
+        <div class="terminal"><b>$</b> python haunted_harness.py app.py<br><span>Reading the source...</span><br><span>Rundown summoned ✓</span></div>
+      </div>
+    </section>
+
+    <section id="features" class="wrap">
+      <div class="section-heading">
+        <div class="eyebrow">What it does</div>
+        <h2>A private code companion, without the cloud séance.</h2>
+        <p>Point the harness at a local file and receive a readable walkthrough from a local model.</p>
+      </div>
+      <div class="grid">
+        <article class="card"><div class="card-icon">🔒</div><h3>Local by design</h3><p>Your source is sent to Ollama on your own machine, not to a hosted AI API.</p></article>
+        <article class="card"><div class="card-icon">🧭</div><h3>Understand any file</h3><p>Pass Python, JSON, Markdown, or another text file and ask what it contains and why it exists.</p></article>
+        <article class="card"><div class="card-icon">⚡</div><h3>Simple CLI</h3><p>One command, one filepath, one concise rundown. Choose a different model with an environment variable.</p></article>
+      </div>
+    </section>
+
+    <section id="install" class="wrap">
+      <div class="section-heading">
+        <div class="eyebrow">Raise the spirit</div>
+        <h2>Install and run locally.</h2>
+        <p>Ollama performs the inference. The Python harness reads the file and prints the explanation.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div><h3>Install Python and Ollama</h3><p>Install Python 3.10+ and Ollama for Windows, macOS, or Linux.</p></div></div>
+        <div class="step"><div><h3>Install the Python client</h3><p>From the project directory, install the only Python dependency.</p></div></div>
+        <div class="step"><div><h3>Download a model</h3><p>The default is lightweight; a coding model usually gives more accurate explanations.</p></div></div>
+        <div class="step"><div><h3>Summon a rundown</h3><p>Pass any local source file as the final argument.</p></div></div>
+      </div>
+      <div class="code-card" style="margin-top: 28px;">
+        <div class="code-top"><span>PowerShell</span><button class="button secondary copy" data-copy="python -m pip install ollama&#10;ollama pull llama3.2:1b&#10;python .\haunted_harness.py .\your_file.py">Copy commands</button></div>
+        <pre><code>python -m pip install ollama
+ollama pull llama3.2:1b
+python .\haunted_harness.py .\your_file.py</code></pre>
+      </div>
+      <div class="notice" style="margin-top: 18px;"><strong>🦇 Keep the terminal alive:</strong> Ollama must be running locally. If it is not already running, start it with <code>ollama serve</code>. If port 11434 is already in use, Ollama is likely already running.</div>
+    </section>
+
+    <section class="wrap">
+      <div class="section-heading">
+        <div class="eyebrow">Choose your target</div>
+        <h2>Explain the file you need.</h2>
+      </div>
+      <div class="grid">
+        <div class="code-card"><div class="code-top"><span>Single file</span></div><pre><code>python .\haunted_harness.py .\src\main.py</code></pre></div>
+        <div class="code-card"><div class="code-top"><span>Documentation</span></div><pre><code>python .\haunted_harness.py .\README.md</code></pre></div>
+        <div class="code-card"><div class="code-top"><span>Better model</span></div><pre><code>$env:HAUNTED_MODEL = "qwen2.5-coder:3b"
+python .\haunted_harness.py .\app.py</code></pre></div>
+      </div>
+    </section>
+
+    <section id="deploy" class="wrap">
+      <div class="section-heading">
+        <div class="eyebrow">Free Vercel hosting</div>
+        <h2>Host this landing page for $0.</h2>
+        <p>This site is a static page, so Vercel can host it on its free tier. The Python harness and Ollama model still run locally; Vercel cannot run your local Ollama process.</p>
+      </div>
+      <div class="code-card">
+        <div class="code-top"><span>Deploy from the project folder</span><button class="button secondary copy" data-copy="npm install -g vercel&#10;vercel login&#10;vercel&#10;vercel --prod">Copy commands</button></div>
+        <pre><code>npm install -g vercel
+vercel login
+vercel
+vercel --prod</code></pre>
+      </div>
+      <div class="notice" style="margin-top: 18px;"><strong>Important:</strong> the deployed page is documentation and a landing page. Do not set <code>OLLAMA_URL</code> to <code>localhost</code> in a Vercel function—Vercel cannot access Ollama running on your Windows computer.</div>
+    </section>
+
+    <section class="wrap">
+      <div class="section-heading"><div class="eyebrow">Troubleshooting</div><h2>When the veil gets foggy.</h2></div>
+      <div class="faq">
+        <details><summary>“ollama is not recognized”</summary><p>Install Ollama, then close and reopen PowerShell so the updated PATH is loaded. Verify with <code>ollama --version</code>.</p></details>
+        <details><summary>“Only one usage of each socket address”</summary><p>Port 11434 is already occupied. Query <code>http://127.0.0.1:11434/api/tags</code>; an HTTP 200 response means Ollama is already running.</p></details>
+        <details><summary>The output is a refusal or invents details</summary><p>The 1B model is small. Try <code>qwen2.5-coder:3b</code> or another coding-focused model, and treat generated explanations as helpful summaries rather than proof.</p></details>
+        <details><summary>Can I make the site review files directly?</summary><p>Not with this static deployment. A browser cannot read arbitrary files from your computer, and Vercel cannot run your local Ollama instance. Keep the CLI local or add a separately hosted, authenticated backend.</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <div class="footer-row">
+      <div>👻 Built for curious developers and haunted codebases.</div>
+      <div>Local inference · No API key · Open model runtime</div>
+    </div>
+  </footer>
+  <script>
+    document.querySelectorAll(".copy").forEach((button) => {
+      button.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(button.dataset.copy);
+        const original = button.textContent;
+        button.textContent = "Copied ✓";
+        setTimeout(() => { button.textContent = original; }, 1400);
+      });
+    });
+  </script>
+</body>
+</html>
