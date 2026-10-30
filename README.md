@@ -136,23 +136,6 @@ Preview the production build locally:
 npm run preview
 ```
 
-## Deploy the landing page to Vercel
-
-The React page is a static site and can be deployed to Vercel's free tier.
-From the project directory:
-
-```powershell
-npm install -g vercel
-vercel login
-vercel
-```
-
-For a production deployment:
-
-```powershell
-vercel --prod
-```
-
 ### Important deployment limitation
 
 Vercel hosts the landing page only. It cannot access Ollama running on your
